@@ -1,7 +1,6 @@
 from rest_framework.viewsets import ModelViewSet 
-from rest_framework.generics import CreateAPIView
 from .serializers import UserModel, UserSerializer
-from django.contrib.auth import login
+
 
 class UserMVS(ModelViewSet):
 
@@ -26,8 +25,3 @@ class UserMVS(ModelViewSet):
         # </--->
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
-
-    def form_valid(self, form):
-        valid = super().form_valid(form)
-        login(self.request, self.object)
-        return valid
