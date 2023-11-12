@@ -6,7 +6,7 @@ from rest_framework.validators import UniqueValidator
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = User
+        model = UserModel
         exclude = [
             "last_login",
             "date_joined",
