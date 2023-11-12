@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from rest_framework.viewsets import ModelViewSet
+from .serializers import Card, CardSerializer
 
-# Create your views here.
+class CardMVS(ModelViewSet):
+
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
