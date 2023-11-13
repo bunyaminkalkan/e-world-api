@@ -1,8 +1,9 @@
-from rest_framework.viewsets import ModelViewSet 
+from rest_framework.generics import CreateAPIView
 from .serializers import UserModel, UserSerializer
+from django.contrib.auth import login, authenticate
 
 
-class UserMVS(ModelViewSet):
+class UserCreateApiView(CreateAPIView):
 
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
@@ -23,5 +24,10 @@ class UserMVS(ModelViewSet):
         token = Token.objects.create(user=user)
         data['key'] = token.key
         # </--->
+        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+        login(request, user)
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)

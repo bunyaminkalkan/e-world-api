@@ -1,12 +1,7 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import UserMVS
+from .views import UserCreateApiView
 
 urlpatterns = [
     path('auth/', include('dj_rest_auth.urls')),
+    path('create/', UserCreateApiView.as_view()),
 ]
-
-router = DefaultRouter()
-router.register('', UserMVS)
-
-urlpatterns += router.urls
