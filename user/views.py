@@ -1,6 +1,6 @@
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView
 from .serializers import UserModel, UserSerializer
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 
 
 class UserCreateApiView(CreateAPIView):
@@ -29,5 +29,13 @@ class UserCreateApiView(CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
     
-    def perform_create(self, serializer):
-        return serializer.save(owner=self.request.user)
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+
+class Logout(GenericAPIView):
+    def get(self, request):
+        request.user.auth_token.delete()
+        logout(request)
+    
