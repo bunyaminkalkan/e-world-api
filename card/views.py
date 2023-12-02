@@ -1,6 +1,6 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, ListAPIView
 from .serializers import Card, CardSerializer
-from user.models import UserModel, User
+from user.models import UserModel
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -10,10 +10,9 @@ class CardListCreate(ListCreateAPIView):
     serializer_class = CardSerializer
 
     def post(self, request):
-        #Add record
+        #Add record for purchase
         user = UserModel.objects.get(username=request.data['username'])
         card = Card.objects.get(name=request.data['name'])
-        print(user.balance, type(user.balance))
         if user.balance >= card.price:
             new_balance = user.balance - card.price
             user.balance = new_balance
@@ -23,3 +22,15 @@ class CardListCreate(ListCreateAPIView):
         else: 
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+
+class InventoryList(ListAPIView):
+    
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+    #-------Accses cards with user id
+    # def get_queryset(self):
+    #     for i in range(UserModel.cards.through.objects.filter(usermodel_id=self.kwargs['pk']).count()):
+    #         return self.queryset.filter(
+    #             id=
+    #         )
+
