@@ -6,7 +6,6 @@ class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
         exclude = [
-            'id',
             'faction',
             'image',
         ]

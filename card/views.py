@@ -11,11 +11,13 @@ class CardListCreate(ListCreateAPIView):
 
     def post(self, request):
         #Add record
-        user = UserModel.objects.filter(username=request.data['username']).values()
-        card = Card.objects.filter(name=request.data['name']).values()
-        if user.values_list('balance')[0][0] >= card.values_list('price')[0][0]:
-            new_balance = user.values_list('balance')[0][0] - card.values_list('price')[0][0]
-            user.update(balance=new_balance)
+        user = UserModel.objects.get(username=request.data['username'])
+        card = Card.objects.get(name=request.data['name'])
+        print(user.balance, type(user.balance))
+        if user.balance >= card.price:
+            new_balance = user.balance - card.price
+            user.balance = new_balance
+            user.save()
             user.cards.add(card)
             return Response(status=status.HTTP_201_CREATED)
         else: 
