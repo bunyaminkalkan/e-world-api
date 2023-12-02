@@ -7,4 +7,4 @@ class UserModel(User):
     balance = models.IntegerField(default=5000)
 
     def __str__(self):
-        return f'{self.username} / {self.first_name} - {self.last_name}' 
+        return f'{self.username} / {self.cards.name}' 

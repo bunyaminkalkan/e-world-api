@@ -23,7 +23,7 @@ class UserCreateApiView(CreateAPIView):
         data = serializer.data
         token = Token.objects.create(user=user)
         data['key'] = token.key
-        # </--->
+        # AutoLogin:
         user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
         login(request, user)
         headers = self.get_success_headers(serializer.data)
@@ -31,11 +31,15 @@ class UserCreateApiView(CreateAPIView):
     
 
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
 from rest_framework import status
 
 class Logout(GenericAPIView):
     def get(self, request):
         request.user.auth_token.delete()
         logout(request)
+        data = {
+        'message': 'Logged out succesfully!'
+        }
+        return Response(data, status=status.HTTP_202_ACCEPTED)
+    
     

@@ -1,8 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from .views import CardMVS
+from .views import CardListCreate
 
-router = DefaultRouter()
-router.register('', CardMVS)
+urlpatterns = [
+    path('', CardListCreate.as_view())
+]
 
-urlpatterns = router.urls
