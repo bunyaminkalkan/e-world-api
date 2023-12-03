@@ -25,7 +25,7 @@ class CardListCreate(ListCreateAPIView):
 
 class InventoryList(ListAPIView):
     serializer_class = CardSerializer
-    #-------Accses cards with username
+    #Accsess cards with username
     def get_queryset(self):
         user = UserModel.objects.get(username=self.kwargs['username'])
         queryset = user.cards.values()

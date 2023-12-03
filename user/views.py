@@ -33,13 +33,15 @@ class UserCreateApiView(CreateAPIView):
 from rest_framework.response import Response
 from rest_framework import status
 
-class Logout(GenericAPIView):
-    def get(self, request):
-        request.user.auth_token.delete()
-        logout(request)
-        data = {
-        'message': 'Logged out succesfully!'
-        }
-        return Response(data, status=status.HTTP_202_ACCEPTED)
+
+#-------------logout with get method
+# class Logout(GenericAPIView):
+#     def get(self, request):
+#         request.user.auth_token.delete()
+#         logout(request)
+#         data = {
+#         'message': 'Logged out succesfully!'
+#         }
+#         return Response(data, status=status.HTTP_202_ACCEPTED)
     
     
