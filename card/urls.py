@@ -4,5 +4,5 @@ from .views import CardListCreate, InventoryList
 
 urlpatterns = [
     path('', CardListCreate.as_view()),
-    path('inventory/<int:pk>/', InventoryList.as_view())
+    path('inventory/<str:username>/', InventoryList.as_view())
 ]

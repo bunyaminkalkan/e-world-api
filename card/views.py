@@ -24,13 +24,10 @@ class CardListCreate(ListCreateAPIView):
         
 
 class InventoryList(ListAPIView):
-    
-    queryset = Card.objects.all()
     serializer_class = CardSerializer
-    #-------Accses cards with user id
-    # def get_queryset(self):
-    #     for i in range(UserModel.cards.through.objects.filter(usermodel_id=self.kwargs['pk']).count()):
-    #         return self.queryset.filter(
-    #             id=
-    #         )
-
+    #-------Accses cards with username
+    def get_queryset(self):
+        user = UserModel.objects.get(username=self.kwargs['username'])
+        queryset = user.cards.values()
+        return queryset
+        
