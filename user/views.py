@@ -1,12 +1,12 @@
 from rest_framework.generics import CreateAPIView, GenericAPIView
-from .serializers import UserModel, UserSerializer
+from .serializers import UserModel, UserCreateSerializer, UserUpdateSerializer
 from django.contrib.auth import login, authenticate, logout
 
 
 class UserCreateApiView(CreateAPIView):
 
     queryset = UserModel.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserCreateSerializer
 
     def create(self, request, *args, **kwargs):
         from rest_framework import status
@@ -29,6 +29,14 @@ class UserCreateApiView(CreateAPIView):
         headers = self.get_success_headers(serializer.data)
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
     
+
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+
+class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = UserModel.objects.all()
+    serializer_class = UserUpdateSerializer
+    lookup_field = 'username'
+
 
 from rest_framework.response import Response
 from rest_framework import status
