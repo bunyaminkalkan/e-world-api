@@ -3,7 +3,7 @@ from .models import UserModel
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 
-
+# user create serializer with validations
 class UserCreateSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(
@@ -52,6 +52,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(data)
         return data
     
+# user update serializer for user update view    
 class UserUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
@@ -65,6 +66,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     
 from dj_rest_auth.serializers import TokenSerializer
 
+# user token serializer
 class UserTokenSerializer(TokenSerializer):
 
     user = UserCreateSerializer()

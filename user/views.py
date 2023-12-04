@@ -2,7 +2,7 @@ from rest_framework.generics import CreateAPIView, GenericAPIView
 from .serializers import UserModel, UserCreateSerializer, UserUpdateSerializer
 from django.contrib.auth import login, authenticate, logout
 
-
+# user create and auto login view and set defalut instance
 class UserCreateApiView(CreateAPIView):
 
     queryset = UserModel.objects.all()
@@ -30,17 +30,19 @@ class UserCreateApiView(CreateAPIView):
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
     
 
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 
+# User update view with authenticated
 class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = UserModel.objects.all()
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserUpdateSerializer
     lookup_field = 'username'
 
 
-from rest_framework.response import Response
-from rest_framework import status
-
+# from rest_framework.response import Response
+# from rest_framework import status
 
 #-------------logout with get method
 # class Logout(GenericAPIView):
