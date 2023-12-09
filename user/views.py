@@ -31,12 +31,12 @@ class UserCreateApiView(CreateAPIView):
     
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from card.permissions import IsAuthenticatedAndOwnData
 
 # User update view with authenticated
 class UserRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     queryset = UserModel.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticatedAndOwnData,)
     serializer_class = UserUpdateSerializer
     lookup_field = 'username'
 

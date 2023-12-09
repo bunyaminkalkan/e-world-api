@@ -1,6 +1,6 @@
 from rest_framework.permissions import IsAuthenticated
 
-class IsAuthenticatedAndOwnCards(IsAuthenticated):
+class IsAuthenticatedAndOwnData(IsAuthenticated):
 
     #Added custom permmission
     def has_permission(self, request, view):
