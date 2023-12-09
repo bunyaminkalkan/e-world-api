@@ -70,6 +70,15 @@ from dj_rest_auth.serializers import TokenSerializer
 class UserTokenSerializer(TokenSerializer):
 
     user = UserCreateSerializer().fields.get("username")
+    # username = serializers.SerializerMethodField()
+    
 
     class Meta(TokenSerializer.Meta):
-        fields = ('key', 'user')
+        fields = ('key', 'user') # need update it shows as "user": "username"
+
+
+    # def get_username(self, obj):
+    #     username = UserCreateSerializer().fields.get("username")
+    #     print(type(username))
+    #     print(username)
+    #     return str(username)
