@@ -3,6 +3,7 @@ from .serializers import Card, CardSerializer
 from user.models import UserModel
 from rest_framework.response import Response
 from rest_framework import status
+from .permissions import IsAuthenticatedAndOwnCards
 
 # card list and purchase view if request method is get all cards are listed if request method is post purchases are made with the given username and cardname.
 class CardListCreate(ListCreateAPIView):
@@ -27,6 +28,7 @@ class CardListCreate(ListCreateAPIView):
 # user inventory view, lists cards the user has
 class InventoryList(ListAPIView):
     serializer_class = CardSerializer
+    permission_classes = (IsAuthenticatedAndOwnCards,)
     #Accsess cards with username
     def get_queryset(self):
         user = UserModel.objects.get(username=self.kwargs['username'])
