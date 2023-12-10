@@ -16,7 +16,7 @@ class Card(models.Model):
         (4, "Common"),
     )
 
-    name = models.CharField(unique=True, max_length=64)
+    cardname = models.CharField(unique=True, max_length=64)
     detail = models.TextField(null=True, blank=True)
     faction = models.PositiveSmallIntegerField(choices=REGIONS, null=True, blank=True)
     rarity = models.PositiveSmallIntegerField(choices=RARITYS, null=True, blank=True)
@@ -25,4 +25,4 @@ class Card(models.Model):
     image = models.ImageField(upload_to="images/", null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.cardname
