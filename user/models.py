@@ -7,6 +7,7 @@ from django_resized import ResizedImageField
 import shutil
 from main.settings import MEDIA_ROOT
 
+
 def path_and_rename(instance, filename):
     upload_to = 'images/profiles/'
     ext = filename.split('.')[-1]
@@ -22,9 +23,7 @@ def path_and_rename(instance, filename):
     new_path = str(MEDIA_ROOT)+ "/" + path
 
     if os.path.isfile(new_path):
-        print()
-        print(os.path.join(upload_to, filename))
-        print()
+        os.remove(new_path)
         return os.path.join(upload_to, filename)
     else:
         return os.path.join(upload_to, filename)
