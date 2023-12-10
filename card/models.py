@@ -22,7 +22,7 @@ class Card(models.Model):
     rarity = models.PositiveSmallIntegerField(choices=RARITYS, null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     power = models.IntegerField(null=True, blank=True)
-    image = models.ImageField(upload_to="images/", null=True, blank=True)
+    image = models.ImageField(upload_to="images/cards/", null=True, blank=True)
 
     def __str__(self):
         return self.cardname
