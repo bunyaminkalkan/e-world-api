@@ -4,6 +4,8 @@ from card.models import Card
 import os
 from uuid import uuid4
 from django_resized import ResizedImageField
+import shutil
+from main.settings import MEDIA_ROOT
 
 def path_and_rename(instance, filename):
     upload_to = 'images/profiles/'
@@ -15,7 +17,17 @@ def path_and_rename(instance, filename):
         # set filename as random string
         filename = '{}.{}'.format(uuid4().hex, ext)
     # return the whole path to the file
-    return os.path.join(upload_to, filename)
+    # if user has profile image overwrite old image --- need update didnt overwrite
+    path = 'images/profiles/' + f"{filename}"
+    new_path = str(MEDIA_ROOT)+ "/" + path
+
+    if os.path.isfile(new_path):
+        print()
+        print(os.path.join(upload_to, filename))
+        print()
+        return os.path.join(upload_to, filename)
+    else:
+        return os.path.join(upload_to, filename)
 
 # create custom usermodel inherite django.contrib.auth.models.user
 class UserModel(User):
