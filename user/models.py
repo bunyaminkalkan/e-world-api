@@ -4,35 +4,40 @@ from card.models import Card
 import os
 from uuid import uuid4
 from django_resized import ResizedImageField
-import shutil
 from main.settings import MEDIA_ROOT
 
 
 def path_and_rename(instance, filename):
+    '''
+    Function that reformats the profile photo uploaded by users and writes the new photo over it if they already have a profile photo
+    '''
     upload_to = 'images/profiles/'
-    ext = filename.split('.')[-1]
+    ext = 'jpg'
     # get filename
     if instance.username:
         filename = '{}.{}'.format(instance.username, ext)
     else:
         # set filename as random string
         filename = '{}.{}'.format(uuid4().hex, ext)
-    # return the whole path to the file
-    # if user has profile image overwrite old image --- need update didnt overwrite
-    path = 'images/profiles/' + f"{filename}"
-    new_path = str(MEDIA_ROOT)+ "/" + path
+    
+    # if user has profile image overwrite old image
+    path = str(MEDIA_ROOT)+ "/" + 'images/profiles/' + f"{filename}" # Path for users' profile photos
 
-    if os.path.isfile(new_path):
-        os.remove(new_path)
+    if os.path.isfile(path):
+        os.remove(path) # Remove old image
         return os.path.join(upload_to, filename)
     else:
         return os.path.join(upload_to, filename)
 
-# create custom usermodel inherite django.contrib.auth.models.user
+# inherite django.contrib.auth.models.user
 class UserModel(User):
+    '''
+    Custom User Model for users 
+    '''
     cards = models.ManyToManyField(Card, blank=True)
     balance = models.IntegerField(default=5000)
-    profile_photo = ResizedImageField(size=[100, 100], crop=['middle', 'center'],upload_to=path_and_rename, null=True, blank=True, default="images/profiles/default")
+    # ResizedImageField, resizes and crops the uploaded image
+    profile_photo = ResizedImageField(size=[500, 500], crop=['middle', 'center'], upload_to=path_and_rename, null=True, blank=True, default="images/profiles/default.jpg")
 
     def __str__(self):
         return self.username

@@ -5,8 +5,13 @@ from rest_framework.validators import UniqueValidator
 
 # user create serializer with validations
 class UserCreateSerializer(serializers.ModelSerializer):
+    '''
+    User Create Serializer For UserCreateAPIView
+    Email must be unique, password1 and password2 must be the same,
+    '''
 
     email = serializers.EmailField(
+        write_only = True,
         required = True,
         validators = [
             UniqueValidator(queryset=UserModel.objects.all())
@@ -40,12 +45,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         validated_data.pop('password2')
         user = UserModel.objects.create(**validated_data)
-        user.set_password(password)
-        user.save()
+        user.set_password(password) # Hashing the password
+        user.save() # Save hashed password
         return user
 
     def validate(self, data):
-        if data.get('password') != data.get('password2'):
+        if data.get('password') != data.get('password2'): # Verifying that passwords are the same
             data = {
                 "password": "Password fields does not match!!!"
             }
@@ -53,7 +58,11 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return data
     
 # user update serializer for user update view    
-class UserUpdateSerializer(serializers.ModelSerializer):
+class UserRUDSerializer(serializers.ModelSerializer):
+    '''
+    User Retrieve Update Destroy Seriazlier For UserRUDAPIView
+    '''
+
     class Meta:
         model = UserModel
         fields = [
@@ -67,8 +76,11 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     
 from dj_rest_auth.serializers import TokenSerializer
 
-# user token serializer
+
 class UserTokenSerializer(TokenSerializer):
+    '''
+    Serializer for tokens of logged in users
+    '''
 
     user = UserCreateSerializer().fields.get("username")
     # username = serializers.SerializerMethodField()

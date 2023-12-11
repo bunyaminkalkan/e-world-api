@@ -1,7 +1,10 @@
 from django.db import models
 
 class Card(models.Model):
-
+    '''
+    Card Model for cards of world
+    '''
+    
     REGIONS = (
         (1, "-"),
         (2, "-"),

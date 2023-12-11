@@ -1,8 +1,7 @@
 from django.urls import path
-from rest_framework.routers import DefaultRouter
-from .views import CardListCreate, InventoryList
+from .views import CardListCreateAPIView, InventoryListAPIView
 
 urlpatterns = [
-    path('', CardListCreate.as_view()),
-    path('inventory/<str:username>/', InventoryList.as_view())
+    path('', CardListCreateAPIView.as_view()),
+    path('inventory/<str:username>/', InventoryListAPIView.as_view())
 ]
