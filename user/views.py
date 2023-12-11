@@ -48,23 +48,30 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserRUDSerializer
     lookup_field = 'username'
 
+    # Password change
     def put(self, request, *args, **kwargs):
 
-        user = UserModel.objects.get(username=request.data['username'])
-        current_password = request.data['current_password']
-        
-        if user.check_password(current_password):
-            if request.data['new_password'] == request.data['new_password2']:
-                user.set_password(request.data['new_password'])
-                user.save()
-                data = {"message": "Password Change Successfully"}
-                return Response(data, status=status.HTTP_202_ACCEPTED)
+        user = UserModel.objects.get(username=self.kwargs['username'])
+        if request.data['current_password']: # if current password not blank
+            current_password = request.data['current_password']
+            if request.data['new_password']: # if current password not blank
+                if user.check_password(current_password): # Check password
+                    if request.data['new_password'] == request.data['new_password2']: # Check new password is same
+                        user.set_password(request.data['new_password']) # Set new password
+                        user.save() # Save user
+                        # data = {"message": "Password Change Successfully"}
+                        return self.update(request, *args, **kwargs)
+                    else:
+                        data = {"new_password": "New_Password fields does not match!!!"}
+                        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    data = {"current_password": "current_password field does not match!!!"}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                data = {"new_password": "New_Password fields does not match!!!"}
-                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                    data = {"new_password": "new_password field does not blank!!!"}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
         else:
-            data = {"current_password": "current_password fields does not match!!!"}
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            return self.update(request, *args, **kwargs)
 
 
 

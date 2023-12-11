@@ -95,7 +95,14 @@ class UserRUDSerializer(serializers.ModelSerializer):
             "new_password2",
         ]
     
-
+    # def validate(self, data):
+    #     if data.get('new_password') != data.get('new_password2'): # Verifying that passwords are the same
+    #         data = {
+    #             "new_password": "New_Password fields does not match!!!"
+    #         }
+    #         raise serializers.ValidationError(data)
+    #     return data
+    
 from dj_rest_auth.serializers import TokenSerializer
 
 
