@@ -63,6 +63,25 @@ class UserRUDSerializer(serializers.ModelSerializer):
     User Retrieve Update Destroy Seriazlier For UserRUDAPIView
     '''
 
+    # User can change password
+    current_password = serializers.CharField(
+        write_only = True, 
+        required = False,
+        style = {'input_type':'password',}
+    )
+
+    new_password = serializers.CharField(
+        write_only = True, 
+        required = False,
+        style = {'input_type':'password',}
+    )
+
+    new_password2 = serializers.CharField(
+        write_only = True, 
+        required = False,
+        style = {'input_type':'password',}
+    )
+
     class Meta:
         model = UserModel
         fields = [
@@ -71,9 +90,12 @@ class UserRUDSerializer(serializers.ModelSerializer):
             "last_name",
             "email",
             "profile_photo",
+            "current_password",
+            "new_password",
+            "new_password2",
         ]
     
-    
+
 from dj_rest_auth.serializers import TokenSerializer
 
 

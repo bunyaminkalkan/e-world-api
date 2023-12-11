@@ -1,6 +1,8 @@
 from rest_framework.generics import CreateAPIView
 from .serializers import UserModel, UserCreateSerializer, UserRUDSerializer
 from django.contrib.auth import login, authenticate
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -12,8 +14,6 @@ class UserCreateAPIView(CreateAPIView):
     serializer_class = UserCreateSerializer
 
     def create(self, request, *args, **kwargs):
-        from rest_framework import status
-        from rest_framework.response import Response
         from rest_framework.authtoken.models import Token
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,6 +47,25 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedAndOwnData,)
     serializer_class = UserRUDSerializer
     lookup_field = 'username'
+
+    def put(self, request, *args, **kwargs):
+
+        user = UserModel.objects.get(username=request.data['username'])
+        current_password = request.data['current_password']
+        
+        if user.check_password(current_password):
+            if request.data['new_password'] == request.data['new_password2']:
+                user.set_password(request.data['new_password'])
+                user.save()
+                data = {"message": "Password Change Successfully"}
+                return Response(data, status=status.HTTP_202_ACCEPTED)
+            else:
+                data = {"new_password": "New_Password fields does not match!!!"}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            data = {"current_password": "current_password fields does not match!!!"}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # from rest_framework.response import Response
