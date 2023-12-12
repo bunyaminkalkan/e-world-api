@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .permissions import IsAuthenticatedAndOwnData
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .pagination import CustomPageNumberPagination
 
 class CardListCreateAPIView(ListCreateAPIView):
     '''
@@ -16,6 +17,7 @@ class CardListCreateAPIView(ListCreateAPIView):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,) # Permission class that anyone can view but only logged in users can make purchases
+    pagination_class = CustomPageNumberPagination
 
     def post(self, request):
         # Add record manytomany table for purchase
@@ -40,6 +42,7 @@ class InventoryListAPIView(ListAPIView):
     
     serializer_class = CardSerializer
     permission_classes = (IsAuthenticatedAndOwnData,)
+    pagination_class = CustomPageNumberPagination
     # Accsess cards with username
     def get_queryset(self):
         user = UserModel.objects.get(username=self.kwargs['username'])
