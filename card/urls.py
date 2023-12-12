@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import CardListCreateAPIView, InventoryListAPIView
+from .views import CardListPurchaseAPIView, InventoryListAPIView
 
 urlpatterns = [
-    path('', CardListCreateAPIView.as_view()),
+    path('', CardListPurchaseAPIView.as_view()),
     path('inventory/<str:username>/', InventoryListAPIView.as_view())
 ]

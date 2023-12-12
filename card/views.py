@@ -7,7 +7,7 @@ from .permissions import IsAuthenticatedAndOwnData
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .pagination import CustomPageNumberPagination
 
-class CardListCreateAPIView(ListCreateAPIView):
+class CardListPurchaseAPIView(ListCreateAPIView):
     '''
     Card list and for users to purchase cards view
     If method is GET all cards are listed
@@ -22,13 +22,14 @@ class CardListCreateAPIView(ListCreateAPIView):
     def post(self, request):
         # Add record manytomany table for purchase
         user = UserModel.objects.get(username=request.data['username'])
-        card = Card.objects.get(name=request.data['name'])
+        card = Card.objects.get(cardname=request.data['cardname'])
         if user.balance >= card.price:
             new_balance = user.balance - card.price
             user.balance = new_balance
             user.save()
             user.cards.add(card)
-            return Response(status=status.HTTP_201_CREATED)
+            data = {'balance': new_balance}
+            return Response(data, status=status.HTTP_201_CREATED)
         else: 
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
