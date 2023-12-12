@@ -102,6 +102,11 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
 
         else:
             return self.partial_update(request, *args, **kwargs)
+        
+    def delete(self, request, *args, **kwargs):
+        user = UserModel.objects.get(username=self.kwargs['username'])
+        user.profile_photo.delete(save=True)
+        return self.destroy(request, *args, **kwargs)
 
 
 
