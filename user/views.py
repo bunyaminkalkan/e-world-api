@@ -36,7 +36,7 @@ class UserCreateAPIView(CreateAPIView):
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from card.permissions import IsAuthenticatedAndOwnData
-
+from django.contrib.auth.password_validation import validate_password
 
 class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     '''
@@ -49,29 +49,60 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'username'
 
     # Password change
-    def put(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
+        '''
+        Function for the user to update their data
+        The current password must be the same as the old password and the new password must be entered correctly twice.
+        The new password must be a password that passes password validation.
+        '''
 
         user = UserModel.objects.get(username=self.kwargs['username'])
-        if request.data['current_password']: # if current password not blank
-            current_password = request.data['current_password']
-            if request.data['new_password']: # if current password not blank
-                if user.check_password(current_password): # Check password
-                    if request.data['new_password'] == request.data['new_password2']: # Check new password is same
-                        user.set_password(request.data['new_password']) # Set new password
+        flag_new = False
+        flag_new2 = False
+        flag_cur = False
+        flag_che = False
+
+        for data in request.data:
+            if data == 'current_password': # if current password not blank
+                flag_cur = True
+                current_password = request.data['current_password']
+            if data == 'new_password': # if new password not blank
+                flag_new = True
+                new_password = request.data['new_password']
+            if data == 'new_password2': # if new password2 not blank
+                flag_new2 = True
+                new_password2 = request.data['new_password2']
+
+        if (flag_cur and user.check_password(current_password)): # Check whether the given password is the same as the password in the database
+            flag_che = True
+
+        if (flag_cur and flag_new and flag_new2): # if filled all password field
+            if(flag_che): # if password is correct
+                if(new_password == new_password2): # Check if new_password1 and new_password2 are the same
+                    if(current_password != new_password): # Check if the new_password is the same as the old password
+                        serializer = self.get_serializer(data=request.data)
+                        serializer.is_valid(raise_exception=True) # Validate new password
+                        user.set_password(new_password) # Set new password
                         user.save() # Save user
-                        # data = {"message": "Password Change Successfully"}
-                        return self.update(request, *args, **kwargs)
+                        return self.partial_update(request, *args, **kwargs)
+                        
                     else:
-                        data = {"new_password": "New_Password fields does not match!!!"}
+                        data = {"current_password": "New_password does not same old password!!!"}
                         return Response(data, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    data = {"current_password": "current_password field does not match!!!"}
+                    data = {"new_password": "New_password fields does not match!!!"}
                     return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                    data = {"new_password": "new_password field does not blank!!!"}
-                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+                data = {"current_password": "Current_password is not correct!!!"}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            
+        elif(flag_cur or flag_new or flag_new2): # If it only fills one or two fields. If it fills three, it goes inside the if block
+            data = {"passwords": "Fill the all password fields not one!!!"}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+
         else:
-            return self.update(request, *args, **kwargs)
+            return self.partial_update(request, *args, **kwargs)
+
 
 
 
