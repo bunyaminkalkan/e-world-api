@@ -4,9 +4,9 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 
 # user create serializer with validations
-class UserCreateSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(serializers.ModelSerializer):
     '''
-    User Create Serializer For UserCreateAPIView
+    User Create Serializer For UserRegisterAPIView
     Email must be unique, password1 and password2 must be the same,
     '''
 
@@ -99,24 +99,25 @@ class UserRUDSerializer(serializers.ModelSerializer):
         ]
     
     
-from dj_rest_auth.serializers import TokenSerializer
-
-
-class UserTokenSerializer(TokenSerializer):
+class LoginSerializer(serializers.ModelSerializer):
     '''
-    Serializer for tokens of logged in users
+    Serializer for user login, balance read only
     '''
-
-    user = UserCreateSerializer().fields.get("username")
-    # username = serializers.SerializerMethodField()
     
+    balance = serializers.IntegerField(
+        read_only = True
+    )
 
-    class Meta(TokenSerializer.Meta):
-        fields = ('key', 'user') # need update it shows as "user": "username"
+    class Meta:
+        model = UserModel
+        fields = ('username', 'password', 'balance')
 
 
-    # def get_username(self, obj):
-    #     username = UserCreateSerializer().fields.get("username")
-    #     print(type(username))
-    #     print(username)
-    #     return str(username)
+class LogoutSerializer(serializers.ModelSerializer):
+    '''
+    Serializer for user logout
+    '''
+
+    class Meta:
+        model = UserModel
+        fields = ()

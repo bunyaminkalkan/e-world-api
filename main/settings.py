@@ -42,8 +42,7 @@ INSTALLED_APPS = [
     #Module
     'rest_framework',
     'rest_framework.authtoken',
-    'dj_rest_auth',
-    "corsheaders",
+    'corsheaders',
     
     #App
     'user',
@@ -147,10 +146,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# DJ-REST-AUTH SETTINGS:
-REST_AUTH = {
-    'TOKEN_SERIALIZER': 'user.serializers.UserTokenSerializer',
-}
 
 # CORS-HEADERS SETTINGS:
 CORS_ALLOWED_ORIGINS = [

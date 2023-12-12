@@ -1,17 +1,17 @@
-from rest_framework.generics import CreateAPIView
-from .serializers import UserModel, UserCreateSerializer, UserRUDSerializer
-from django.contrib.auth import login, authenticate
+from rest_framework.generics import CreateAPIView, GenericAPIView
+from .serializers import UserModel, UserRegisterSerializer, UserRUDSerializer, LoginSerializer, LogoutSerializer
+from django.contrib.auth import login, logout, authenticate
 from rest_framework.response import Response
 from rest_framework import status
 
 
-class UserCreateAPIView(CreateAPIView):
+class UserRegisterAPIView(CreateAPIView):
     '''
     View where users can create an account and log in immediately after creating it
     '''
 
     queryset = UserModel.objects.all()
-    serializer_class = UserCreateSerializer
+    serializer_class = UserRegisterSerializer
 
     def create(self, request, *args, **kwargs):
         from rest_framework.authtoken.models import Token
@@ -36,7 +36,7 @@ class UserCreateAPIView(CreateAPIView):
 
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from card.permissions import IsAuthenticatedAndOwnData
-from django.contrib.auth.password_validation import validate_password
+
 
 class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     '''
@@ -109,19 +109,52 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
 
+from rest_framework.authtoken.models import Token
 
+# Logout with post method
+class LogoutAPIView(GenericAPIView):
+    '''
+    View to delete the token given in the header with the post method
+    '''
+    model = UserModel.objects.all()
+    serializer_class =  LogoutSerializer
 
-# from rest_framework.response import Response
-# from rest_framework import status
+    def post(self, request):
+        request.user.auth_token.delete() # Delete token
+        logout(request) # Logout
+        data = {
+        'message': 'Logged out succesfully!'
+        }
+        return Response(data, status=status.HTTP_202_ACCEPTED)
 
-#-------------logout with get method
-# class Logout(GenericAPIView):
-#     def get(self, request):
-#         request.user.auth_token.delete()
-#         logout(request)
-#         data = {
-#         'message': 'Logged out succesfully!'
-#         }
-#         return Response(data, status=status.HTTP_202_ACCEPTED)
+# Login with post method  
+class LoginAPIView(GenericAPIView):
+    '''
+    The view where the user can log in by entering his username and password.
+    Balance information is sent to be displayed after log in
+    '''
     
+    model = UserModel.objects.all()
+    serializer_class =  LoginSerializer
+
+    def post(self, request):
+        if UserModel.objects.filter(username=request.data['username']).exists(): # Check the username is correct
+            user = UserModel.objects.get(username=request.data['username']) # Get user
+            if user.check_password(request.data['password']): # Check the password is correct
+                token, created = Token.objects.get_or_create(user=user) # If the user has a token, get it, otherwise create it
+                balance = user.balance # Get balance for display
+                login(request, user) # Login
+                data = {
+                    'username': request.data['username'],
+                    'balance': balance,
+                    'key': token.key
+                }
+                return Response(data, status=status.HTTP_202_ACCEPTED)
+            else:
+                data = {'password': 'Password is not correct'}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            
+        else:
+            data = {'username': 'User not found'}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
     

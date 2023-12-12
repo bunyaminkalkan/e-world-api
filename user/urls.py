@@ -1,9 +1,9 @@
-from django.urls import path, include
-from .views import UserCreateAPIView, UserRUDAPIView #,Logout
+from django.urls import path
+from .views import UserRegisterAPIView, UserRUDAPIView, LogoutAPIView, LoginAPIView
 
 urlpatterns = [
-    # path('auth/logout/', Logout.as_view()),
-    path('auth/', include('dj_rest_auth.urls')),
-    path('create/', UserCreateAPIView.as_view()),
+    path('login/', LoginAPIView.as_view()),
+    path('logout/', LogoutAPIView.as_view()),
+    path('register/', UserRegisterAPIView.as_view()),
     path('update/<str:username>', UserRUDAPIView.as_view()),
 ]
