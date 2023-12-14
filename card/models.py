@@ -6,23 +6,15 @@ class Card(models.Model):
     '''
     
     REGIONS = (
-        (1, "-"),
-        (2, "-"),
-        (3, "-"),
-        (4, "-"),
-    )
-
-    RARITYS = (
-        (1, "Legendary"),
-        (2, "Epic"),
-        (3, "Rare"),
-        (4, "Common"),
+        (1, "Ferhat Empire"),
+        (2, "Hilito Empire"),
+        (3, "Barış Empire"),
+        (4, "Müno Empire"),
     )
 
     cardname = models.CharField(unique=True, max_length=64)
     detail = models.TextField(null=True, blank=True)
     faction = models.PositiveSmallIntegerField(choices=REGIONS, null=True, blank=True)
-    rarity = models.PositiveSmallIntegerField(choices=RARITYS, null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     power = models.IntegerField(null=True, blank=True)
     image = models.ImageField(upload_to="images/cards/", null=True, blank=True)

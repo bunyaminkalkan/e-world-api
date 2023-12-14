@@ -28,7 +28,7 @@ class CardListPurchaseAPIView(ListCreateAPIView):
             user.balance = new_balance
             user.save()
             user.cards.add(card)
-            data = {'balance': new_balance}
+            data = {'balance': new_balance, 'purchase': 'Successfully'}
             return Response(data, status=status.HTTP_201_CREATED)
         else: 
             return Response(status=status.HTTP_400_BAD_REQUEST)

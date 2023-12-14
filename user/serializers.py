@@ -108,6 +108,11 @@ class LoginSerializer(serializers.ModelSerializer):
         read_only = True
     )
 
+    password = serializers.CharField(
+        write_only = True,
+        style = {'input_type':'password',}
+    )
+
     class Meta:
         model = UserModel
         fields = ('username', 'password', 'balance')
