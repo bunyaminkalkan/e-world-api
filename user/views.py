@@ -147,7 +147,8 @@ class LoginAPIView(GenericAPIView):
                 data = {
                     'username': request.data['username'],
                     'balance': balance,
-                    'key': token.key
+                    'key': token.key,
+                    'image': user.profile_photo.url
                 }
                 return Response(data, status=status.HTTP_202_ACCEPTED)
             else:
