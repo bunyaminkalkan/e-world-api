@@ -21,7 +21,6 @@ class CardListPurchaseAPIView(ListCreateAPIView):
         
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -68,6 +67,6 @@ class InventoryListAPIView(ListAPIView):
     # Accsess cards with username
     def get_queryset(self):
         user = UserModel.objects.get(username=self.kwargs['username'])
-        queryset = user.cards.values()
+        queryset = user.cards.all()
         return queryset
         
