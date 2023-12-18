@@ -97,13 +97,7 @@ class UserRUDSerializer(serializers.ModelSerializer):
             "new_password",
             "new_password2",
         ]
-
-    def to_representation(self, instance):
-        response = super(UserRUDSerializer, self).to_representation(instance)
-        if instance.profile_photo:
-            response['profile_photo'] = instance.profile_photo.url # Relative path
-        return response
-    
+  
     
 class LoginSerializer(serializers.ModelSerializer):
     '''

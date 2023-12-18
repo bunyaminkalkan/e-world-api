@@ -10,8 +10,3 @@ class CardSerializer(serializers.ModelSerializer):
         model = Card
         exclude = []
 
-    def to_representation(self, instance):
-        response = super(CardSerializer, self).to_representation(instance)
-        if instance.image:
-            response['image'] = instance.image.url # Relative path
-        return response
