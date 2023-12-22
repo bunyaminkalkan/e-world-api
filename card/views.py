@@ -26,11 +26,12 @@ class CardListPurchaseAPIView(ListCreateAPIView):
             serializer = self.get_serializer(page, many=True)
             if request.user.is_authenticated: # if user is logged in
                 user = UserModel.objects.get(id=request.user.id) # get user
-                for i in range(len(user.cards.values_list())): # number of cards the user has
-                    card_price = user.cards.values_list()[i][4] # get price for the cards the user has
+                for i in range(len(user.cards.all())): # number of cards the user has
+                    cards = user.cards.all() 
                     for j in range(len(serializer.data)): # browse all cards
-                        if card_price == serializer.data[j]['price']: # find cards owned by user
+                        if cards[i].cardname == serializer.data[j]['cardname']: # find cards owned by user
                             serializer.data[j]['price'] = 0 # set card price equal to 0
+                            
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
