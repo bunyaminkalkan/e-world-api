@@ -78,6 +78,6 @@ class FactionListAPIView(ListAPIView):
     '''
     List factions
     '''
-    
+    queryset = Faction.objects.all()
     serializer_class = FactionSerializer
     pagination_class = CustomPageNumberPagination
