@@ -1,5 +1,5 @@
 from rest_framework.generics import ListCreateAPIView, ListAPIView
-from .serializers import Card, CardSerializer
+from .serializers import Card, CardSerializer, Faction, FactionSerializer
 from user.models import UserModel
 from rest_framework.response import Response
 from rest_framework import status
@@ -31,7 +31,9 @@ class CardListPurchaseAPIView(ListCreateAPIView):
                     for j in range(len(serializer.data)): # browse all cards
                         if cards[i].cardname == serializer.data[j]['cardname']: # find cards owned by user
                             serializer.data[j]['price'] = 0 # set card price equal to 0
-                            
+            for i in range(len(queryset)): 
+                faction = Faction.objects.get(id=serializer.data[i]['faction']) # get faction 
+                serializer.data[i]['faction'] = "http://127.0.0.1:8000" + faction.flag.url # set faction image for faction field
             return self.get_paginated_response(serializer.data)
 
         serializer = self.get_serializer(queryset, many=True)
@@ -70,4 +72,12 @@ class InventoryListAPIView(ListAPIView):
         user = UserModel.objects.get(username=self.kwargs['username'])
         queryset = user.cards.all()
         return queryset
-        
+    
+
+class FactionListAPIView(ListAPIView):
+    '''
+    List factions
+    '''
+    
+    serializer_class = FactionSerializer
+    pagination_class = CustomPageNumberPagination
