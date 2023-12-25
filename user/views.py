@@ -144,18 +144,19 @@ class LoginAPIView(GenericAPIView):
                 token, created = Token.objects.get_or_create(user=user) # If the user has a token, get it, otherwise create it
                 balance = user.balance # Get balance for display
                 login(request, user) # Login
+                image = "http://127.0.0.1:8000" + user.profile_photo.url
                 data = {
                     'username': request.data['username'],
                     'balance': balance,
                     'key': token.key,
-                    'image': user.profile_photo.url
+                    'image': image
                 }
                 return Response(data, status=status.HTTP_202_ACCEPTED)
             else:
-                data = {'password': 'Password is not correct'}
+                data = {'wrong': 'username or password is not correct'}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         else:
-            data = {'username': 'User not found'}
+            data = {'wrong': 'username or password is not correct'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
     
