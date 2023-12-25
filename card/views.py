@@ -80,6 +80,19 @@ class InventoryListAPIView(ListAPIView):
         queryset = user.cards.all()
         return queryset
     
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            for i in range(len(queryset)):
+                faction = Faction.objects.get(id=serializer.data[i]['faction']) # get faction 
+                serializer.data[i]['faction'] = "http://127.0.0.1:8000" + faction.flag.url # set faction image for faction field
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
 
 class FactionListAPIView(ListAPIView):
     '''
