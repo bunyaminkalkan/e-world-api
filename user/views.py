@@ -27,7 +27,7 @@ class UserRegisterAPIView(CreateAPIView):
         token = Token.objects.create(user=user) # Create token for user
         data['key'] = token.key
         # AutoLogin:
-        user = authenticate(username=request.POST.get('username'), password=request.POST.get('password'))
+        user = authenticate(username=request.data['username'], password=request.data['password'])
         login(request, user)
         # Response
         headers = self.get_success_headers(serializer.data['username'])
@@ -49,7 +49,7 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'username'
 
     # Password change
-    def patch(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
         '''
         Function for the user to update their data
         The current password must be the same as the old password and the new password must be entered correctly twice.
@@ -61,17 +61,16 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
         flag_new2 = False
         flag_cur = False
         flag_che = False
-
-        for data in request.data:
-            if data == 'current_password': # if current password not blank
-                flag_cur = True
-                current_password = request.data['current_password']
-            if data == 'new_password': # if new password not blank
-                flag_new = True
-                new_password = request.data['new_password']
-            if data == 'new_password2': # if new password2 not blank
-                flag_new2 = True
-                new_password2 = request.data['new_password2']
+        
+        if request.data['current_password'] != '': # if current password not blank
+            flag_cur = True
+            current_password = request.data['current_password']
+        if request.data['new_password'] != '': # if new password not blank
+            flag_new = True
+            new_password = request.data['new_password']
+        if request.data['new_password2'] != '': # if new password2 not blank
+            flag_new2 = True
+            new_password2 = request.data['new_password2']
 
         if (flag_cur and user.check_password(current_password)): # Check whether the given password is the same as the password in the database
             flag_che = True
@@ -84,28 +83,33 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
                         serializer.is_valid(raise_exception=True) # Validate new password
                         user.set_password(new_password) # Set new password
                         user.save() # Save user
-                        return self.partial_update(request, *args, **kwargs)
+                        return self.update(request, *args, **kwargs)
                         
                     else:
-                        data = {"current_password": "New_password does not same old password!!!"}
+                        data = {"message": "New_password does not same old password!!!"}
                         return Response(data, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    data = {"new_password": "New_password fields does not match!!!"}
+                    data = {"message": "New_password fields does not match!!!"}
                     return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                data = {"current_password": "Current_password is not correct!!!"}
+                data = {"message": "Current_password is not correct!!!"}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         elif(flag_cur or flag_new or flag_new2): # If it only fills one or two fields. If it fills three, it goes inside the if block
-            data = {"passwords": "Fill the all password fields not one!!!"}
+            data = {"message": "Fill the all password fields not one!!!"}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            return self.partial_update(request, *args, **kwargs)
+            request.data.pop('current_password')
+            request.data.pop('new_password')
+            request.data.pop('new_password2')
+            print(request.data)
+            return self.update(request, *args, **kwargs)
         
     def delete(self, request, *args, **kwargs):
         user = UserModel.objects.get(username=self.kwargs['username'])
         user.profile_photo.delete(save=True)
+        user.auth_token.delete()
         return self.destroy(request, *args, **kwargs)
 
 
@@ -122,9 +126,7 @@ class LogoutAPIView(GenericAPIView):
     def post(self, request):
         request.user.auth_token.delete() # Delete token
         logout(request) # Logout
-        data = {
-        'message': 'Logged out succesfully!'
-        }
+        data = {'message': 'Logged out succesfully!'}
         return Response(data, status=status.HTTP_202_ACCEPTED)
 
 # Login with post method  
@@ -153,10 +155,10 @@ class LoginAPIView(GenericAPIView):
                 }
                 return Response(data, status=status.HTTP_202_ACCEPTED)
             else:
-                data = {'wrong': 'username or password is not correct'}
+                data = {'message': 'username or password is not correct'}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         else:
-            data = {'wrong': 'username or password is not correct'}
+            data = {'message': 'username or password is not correct'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
     
