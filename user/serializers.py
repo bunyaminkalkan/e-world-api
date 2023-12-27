@@ -38,6 +38,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'password2',
+            'balance',
+            'profile_photo'
         )
 
     

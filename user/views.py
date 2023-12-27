@@ -146,12 +146,12 @@ class LoginAPIView(GenericAPIView):
                 token, created = Token.objects.get_or_create(user=user) # If the user has a token, get it, otherwise create it
                 balance = user.balance # Get balance for display
                 login(request, user) # Login
-                image = "http://127.0.0.1:8000" + user.profile_photo.url
+                profile_photo = "http://127.0.0.1:8000" + user.profile_photo.url
                 data = {
                     'username': request.data['username'],
                     'balance': balance,
-                    'key': token.key,
-                    'image': image
+                    'profile_photo': profile_photo,
+                    'key': token.key
                 }
                 return Response(data, status=status.HTTP_202_ACCEPTED)
             else:
