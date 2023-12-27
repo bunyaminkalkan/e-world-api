@@ -47,20 +47,24 @@ class CardListPurchaseAPIView(ListCreateAPIView):
             user_card = user.cards.all()
             for card2 in user_card:
                 if card == card2:
-                    return Response(status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    if user.balance >= card.price:
-                        new_balance = user.balance - card.price
-                        new_price = card.price * 1.22
-                        user.balance = new_balance
-                        card.price = int(new_price)
-                        user.save()
-                        card.save()
-                        user.cards.add(card)
-                        data = {'balance': new_balance, 'purchase': 'Successfully'}
-                        return Response(data, status=status.HTTP_201_CREATED)
-                    else: 
-                        return Response(status=status.HTTP_400_BAD_REQUEST)
+                    data = {'message': 'You already have this card'}
+                    return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            
+            if user.balance >= card.price:
+                new_balance = user.balance - card.price
+                new_price = card.price * 1.22
+                user.balance = new_balance
+                card.price = int(new_price)
+                user.save()
+                card.save()
+                user.cards.add(card)
+                data = {'balance': new_balance, 'purchase': 'Successfully'}
+                return Response(data, status=status.HTTP_201_CREATED)
+            
+            else:
+                data = {'message', 'You dont have enough coins'}
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+            
         return Response(status=status.HTTP_400_BAD_REQUEST)
         
 
