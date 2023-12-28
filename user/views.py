@@ -100,15 +100,13 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            request.data.pop('current_password')
-            request.data.pop('new_password')
-            request.data.pop('new_password2')
             print(request.data)
             return self.update(request, *args, **kwargs)
         
     def delete(self, request, *args, **kwargs):
         user = UserModel.objects.get(username=self.kwargs['username'])
-        user.profile_photo.delete(save=True)
+        if user.profile_photo.url != '/media/images/profiles/default.png':
+            user.profile_photo.delete(save=True)
         user.auth_token.delete()
         return self.destroy(request, *args, **kwargs)
 
