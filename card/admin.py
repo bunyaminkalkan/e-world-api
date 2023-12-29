@@ -21,6 +21,7 @@ class CardModelAdmin(admin.ModelAdmin):
     fields = (
         ('cardname'),
         ('detail'),
+        ('faction'),
         ('power', 'price'),
         ('image', 'view_image'),
     )
