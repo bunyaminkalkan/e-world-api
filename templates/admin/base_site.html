@@ -1,0 +1,46 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block branding %}
+    <div class="myDiv">
+        <img src="{% static 'logo.png' %}" style="height: 50px; width: 50px;" alt="">
+        <h1 id="head">E-World Admin Site</h1>
+    </div>
+{% endblock %}
+
+{% block extrastyle %}
+    <style>
+        #header {
+            height: 50px;
+            background: #542380;
+            color: #fff;
+        }
+        #branding h1 {
+            color: #fff;
+        }
+        a:link, a:visited {
+            color: blueviolet;
+        }
+        div.breadcrumbs {
+            background: #542380;
+            color: #10284e;
+            opacity: 0.75;
+            margin-bottom: 10px;
+            color: #fff !important;
+        }
+        div.breadcrumbs a {
+            color: #fff !important;
+        }
+        .module h2, .module caption, .inline-group h2 {
+            background: #542380;
+        }
+        .button, input[type=submit], input[type=button], .submit-row input, a.button {
+            background: #10284e;
+            color: #fff;
+        }
+        div.myDiv {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+{% endblock %}

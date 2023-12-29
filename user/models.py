@@ -41,3 +41,9 @@ class UserModel(User):
 
     def __str__(self):
         return self.username
+    
+    def view_profile_photo(self):
+        from django.utils.safestring import mark_safe
+        if self.profile_photo:
+            return mark_safe(f'<img src={self.profile_photo.url} style="max-height:150px; max-width:150px;"></img>')
+        return mark_safe(f'<h2>No Profile Photo</h2>')

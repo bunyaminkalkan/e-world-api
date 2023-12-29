@@ -11,6 +11,12 @@ class Faction(models.Model):
 
     def __str__(self):
         return self.faction_name
+    
+    def view_flag(self):
+        from django.utils.safestring import mark_safe
+        if self.flag:
+            return mark_safe(f'<img src={self.flag.url} style="height:200px; width:150px;"></img>')
+        return mark_safe(f'<h2>No Profile Photo</h2>')
 
 
 class Card(models.Model):
@@ -27,3 +33,9 @@ class Card(models.Model):
 
     def __str__(self):
         return self.cardname
+    
+    def view_image(self):
+        from django.utils.safestring import mark_safe
+        if self.image:
+            return mark_safe(f'<img src={self.image.url} style="height:200px; width:150px;"></img>')
+        return mark_safe(f'<h2>No Profile Photo</h2>')
