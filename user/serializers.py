@@ -87,6 +87,8 @@ class UserRUDSerializer(serializers.ModelSerializer):
         style = {'input_type':'password',}
     )
 
+    profile_photo = serializers.ImageField(required=False)
+    
     class Meta:
         model = UserModel
         fields = [
