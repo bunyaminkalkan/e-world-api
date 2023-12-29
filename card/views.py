@@ -63,9 +63,9 @@ class CardListPurchaseAPIView(ListCreateAPIView):
             
             else:
                 data = {'message', 'You dont have enough coins'}
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
         
 
 # user inventory view, lists cards the user has
