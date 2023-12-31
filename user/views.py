@@ -86,13 +86,13 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
                         return self.update(request, *args, **kwargs)
                         
                     else:
-                        data = {"message": "New_password does not same old password!!!"}
+                        data = {"message": "New Password does not same old password!!!"}
                         return Response(data, status=status.HTTP_400_BAD_REQUEST)
                 else:
-                    data = {"message": "New_password fields does not match!!!"}
+                    data = {"message": "New Password fields does not match!!!"}
                     return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                data = {"message": "Current_password is not correct!!!"}
+                data = {"message": "Current Password is not correct!!!"}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         elif(flag_cur or flag_new or flag_new2): # If it only fills one or two fields. If it fills three, it goes inside the if block
@@ -153,10 +153,10 @@ class LoginAPIView(GenericAPIView):
                 }
                 return Response(data, status=status.HTTP_202_ACCEPTED)
             else:
-                data = {'message': 'username or password is not correct'}
+                data = {'message': 'Username or Password is not correct'}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         else:
-            data = {'message': 'username or password is not correct'}
+            data = {'message': 'Username or Password is not correct'}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
     
