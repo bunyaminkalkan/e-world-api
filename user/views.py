@@ -99,8 +99,12 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
             data = {"message": "Fill the all password fields not one!!!"}
             return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
+        elif(self.kwargs['username'] != request.data['username']):
+            if (UserModel.objects.filter(username=request.data['username']).exists()):
+                data = {"message": "A user with that username already exists."}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            return self.update(request, *args, **kwargs)
         else:
-            print(request.data)
             return self.update(request, *args, **kwargs)
         
     def delete(self, request, *args, **kwargs):
