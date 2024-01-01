@@ -71,9 +71,10 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
             flag_new2 = True
             new_password2 = request.data['new_password2']
 
-        if (not (flag_cur and user.check_password(current_password))): # Check whether the given password is the same as the password in the database
-            data = {"message": "Current Password is not correct!!!"}
-            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+        if (flag_cur):# Check whether the given password is the same as the password in the database
+            if (not user.check_password(current_password)):
+                data = {"message": "Current Password is not correct!!!"}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
               
         if (flag_cur and flag_new and flag_new2): # if filled all password field
             if(new_password == new_password2): # Check if new_password1 and new_password2 are the same
