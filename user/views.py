@@ -60,7 +60,6 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
         flag_new = False
         flag_new2 = False
         flag_cur = False
-        flag_che = False
         
         if request.data['current_password'] != '': # if current password not blank
             flag_cur = True
@@ -72,27 +71,24 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
             flag_new2 = True
             new_password2 = request.data['new_password2']
 
-        if (flag_cur and user.check_password(current_password)): # Check whether the given password is the same as the password in the database
-            flag_che = True
-
+        if (not (flag_cur and user.check_password(current_password))): # Check whether the given password is the same as the password in the database
+            data = {"message": "Current Password is not correct!!!"}
+            return Response(data, status=status.HTTP_400_BAD_REQUEST)
+              
         if (flag_cur and flag_new and flag_new2): # if filled all password field
-            if(flag_che): # if password is correct
-                if(new_password == new_password2): # Check if new_password1 and new_password2 are the same
-                    if(current_password != new_password): # Check if the new_password is the same as the old password
-                        serializer = self.get_serializer(data=request.data)
-                        serializer.is_valid(raise_exception=True) # Validate new password
-                        user.set_password(new_password) # Set new password
-                        user.save() # Save user
-                        return self.update(request, *args, **kwargs)
-                        
-                    else:
-                        data = {"message": "New Password does not same old password!!!"}
-                        return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            if(new_password == new_password2): # Check if new_password1 and new_password2 are the same
+                if(current_password != new_password): # Check if the new_password is the same as the old password
+                    serializer = self.get_serializer(data=request.data)
+                    serializer.is_valid(raise_exception=True) # Validate new password
+                    user.set_password(new_password) # Set new password
+                    user.save() # Save user
+                    return self.update(request, *args, **kwargs)
+                    
                 else:
-                    data = {"message": "New Password fields does not match!!!"}
+                    data = {"message": "New Password does not same old password!!!"}
                     return Response(data, status=status.HTTP_400_BAD_REQUEST)
             else:
-                data = {"message": "Current Password is not correct!!!"}
+                data = {"message": "New Password fields does not match!!!"}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
             
         elif(flag_cur or flag_new or flag_new2): # If it only fills one or two fields. If it fills three, it goes inside the if block
