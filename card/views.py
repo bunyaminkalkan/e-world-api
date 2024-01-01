@@ -26,11 +26,24 @@ class CardListPurchaseAPIView(ListCreateAPIView):
             serializer = self.get_serializer(page, many=True)
             if request.user.is_authenticated: # if user is logged in
                 user = UserModel.objects.get(id=request.user.id) # get user
+                owned_cards_name = []
                 for i in range(len(user.cards.all())): # number of cards the user has
-                    cards = user.cards.all() 
+                    cards = user.cards.all()
                     for j in range(len(serializer.data)): # browse all cards
                         if cards[i].cardname == serializer.data[j]['cardname']: # find cards owned by user
-                            serializer.data[j]['price'] = 0 # set card price equal to 0
+                            serializer.data[j]['owned'] = 1 # set card owned field equal to 1
+                            owned_cards_name += [serializer.data[j]['cardname']]
+                            break
+
+                for card in serializer.data:
+                    found = False
+                    for i in range(len(owned_cards_name)):
+                        if card['cardname'] == owned_cards_name[i]:
+                            found = True
+                            break
+                    if not found:
+                        card['owned'] = 0 # Set the owned field of cards that the user does not own to 0          
+                
             for i in range(len(queryset)): 
                 faction = Faction.objects.get(id=serializer.data[i]['faction']) # get faction 
                 serializer.data[i]['faction'] = "http://127.0.0.1:8000" + faction.flag.url # set faction image for faction field
