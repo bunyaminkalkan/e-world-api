@@ -1,4 +1,4 @@
-# E-World-api
+# E-World-Api
 
 Welcome to Your Django E-World-api! This project aims to [Creating an Interactive Card Trading Platform].
 
