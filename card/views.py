@@ -24,6 +24,8 @@ class CardListPurchaseAPIView(ListCreateAPIView):
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
+            for data in serializer.data:
+                data['owned'] = 0
             if request.user.is_authenticated: # if user is logged in
                 user = UserModel.objects.get(id=request.user.id) # get user
                 owned_cards_name = []
