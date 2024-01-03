@@ -35,7 +35,7 @@ class UserModel(User):
     Custom User Model for users 
     '''
     cards = models.ManyToManyField(Card, blank=True)
-    balance = models.IntegerField(default=5000)
+    balance = models.IntegerField(default=0)
     # ResizedImageField, resizes and crops the uploaded image
     profile_photo = ResizedImageField(size=[500, 500], crop=['middle', 'center'], upload_to=path_and_rename, null=True, blank=True, default="images/profiles/default.png")
 

@@ -21,8 +21,17 @@ class UserRegisterAPIView(CreateAPIView):
         serializer.validated_data['is_superuser'] = False
         serializer.validated_data['is_staff'] = False
         serializer.validated_data['is_active'] = True
+        # Promotions
+        promotion_chars = ('e', 'm', 'i', 'r', 'o', 'z', 't', 'u', 'k')
+        username = serializer.validated_data['username'].lower()
+        promotion_number = set()
+        for char in username:
+            char_lower = char.lower()
+            if char_lower in promotion_chars and char not in promotion_number:
+                promotion_number.add(char)
         # <--- User.save() & Token.create() --->
         user = serializer.save()
+        user.balance += len(promotion_number) * 10
         data = serializer.data
         token = Token.objects.create(user=user) # Create token for user
         data['key'] = token.key
