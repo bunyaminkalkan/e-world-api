@@ -32,6 +32,7 @@ class UserRegisterAPIView(CreateAPIView):
         # <--- User.save() & Token.create() --->
         user = serializer.save()
         user.balance += len(promotion_number) * 10
+        user.save()
         data = serializer.data
         token = Token.objects.create(user=user) # Create token for user
         data['key'] = token.key
