@@ -16,7 +16,7 @@ class Faction(models.Model):
         from django.utils.safestring import mark_safe
         if self.flag:
             return mark_safe(f'<img src={self.flag.url} style="height:200px; width:150px;"></img>')
-        return mark_safe(f'<h2>No Profile Photo</h2>')
+        return mark_safe(f'<h2>No Flag</h2>')
 
 
 class Card(models.Model):
@@ -38,4 +38,4 @@ class Card(models.Model):
         from django.utils.safestring import mark_safe
         if self.image:
             return mark_safe(f'<img src={self.image.url} style="height:200px; width:150px;"></img>')
-        return mark_safe(f'<h2>No Profile Photo</h2>')
+        return mark_safe(f'<h2>No Image</h2>')
