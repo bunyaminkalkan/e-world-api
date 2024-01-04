@@ -26,7 +26,7 @@ class Card(models.Model):
     
     cardname = models.CharField(unique=True, max_length=64)
     detail = models.TextField(null=True, blank=True)
-    faction = models.ForeignKey(Faction, on_delete=models.PROTECT, null=True, blank=True)
+    faction = models.ForeignKey(Faction, on_delete=models.PROTECT)
     price = models.IntegerField(null=True, blank=True)
     power = models.IntegerField(null=True, blank=True)
     image = models.ImageField(upload_to="images/cards/", null=True, blank=True)
