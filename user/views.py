@@ -110,6 +110,9 @@ class UserRUDAPIView(RetrieveUpdateDestroyAPIView):
             if (UserModel.objects.filter(username=request.data['username']).exists()):
                 data = {"message": "A user with that username already exists."}
                 return Response(data, status=status.HTTP_400_BAD_REQUEST)
+            elif ('admin' in request.data['username']):
+                data = {"message": "Did you really think you could get this username?"}
+                return Response(data, status=status.HTTP_400_BAD_REQUEST)
             return self.update(request, *args, **kwargs)
         else:
             return self.update(request, *args, **kwargs)
