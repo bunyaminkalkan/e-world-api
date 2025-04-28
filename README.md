@@ -57,19 +57,29 @@ To get this project up and running on your local machine, follow these steps:
     python manage.py migrate
     ```
 
-7. Create a superuser (admin):
+
+7. Create a .env file:
+
+   *   Create a file named `.env` in the root directory of the project. This file will store your sensitive configuration variables, such as the SECRET_KEY.
+   *   Add the following line to the `.env` file, replacing `YOUR_SECRET_KEY` with a strong, randomly generated key:
+
+        ```
+        SECRET_KEY=YOUR_SECRET_KEY
+        ```
+
+8. Create a superuser (admin):
 
     ```bash
     python manage.py createsuperuser
     ```
 
-8. Start the development server:
+9. Start the development server:
 
     ```bash
     python manage.py runserver
     ```
 
-9. Access the Django admin:
+10. Access the Django admin:
 
     Open a web browser and go to `http://127.0.0.1:8000/admin/` to access the admin panel. Log in using the superuser credentials created earlier.
 
